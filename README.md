@@ -2,7 +2,9 @@
 
 ## DB schema:
 
-<img src="schema.png" alt="DB schema" height="500"/>
+<p align="center">
+  <img src="schema.png" alt="DB schema" height="500"/>
+</p>
 
 ## Launch
 
