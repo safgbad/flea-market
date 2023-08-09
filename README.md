@@ -2,7 +2,7 @@
 
 ## DB schema:
 
-![DB schema](/schema.png)
+<img src="schema.png" alt="DB schema" height="500"/>
 
 ## Launch
 
