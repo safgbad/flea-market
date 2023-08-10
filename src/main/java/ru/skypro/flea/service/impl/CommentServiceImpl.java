@@ -1,6 +1,5 @@
 package ru.skypro.flea.service.impl;
 
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import ru.skypro.flea.dto.CommentDto;
 import ru.skypro.flea.dto.CommentsDto;
@@ -19,16 +18,18 @@ import java.util.Optional;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
+    private final CommentMapper commentMapper;
 
     private final CommentRepository commentRepository;
 
     private final AdRepository adRepository;
 
     public CommentServiceImpl(CommentRepository commentRepository,
-                              AdRepository adRepository) {
+                              AdRepository adRepository,
+                              CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
         this.adRepository = adRepository;
+        this.commentMapper = commentMapper;
     }
 
     @Override
