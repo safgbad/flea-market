@@ -1,6 +1,5 @@
 package ru.skypro.flea.service.impl;
 
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.flea.dto.AdDto;
@@ -19,12 +18,14 @@ import java.util.Optional;
 @Service
 public class AdServiceImpl implements AdService {
 
-    private final AdMapper adMapper = Mappers.getMapper(AdMapper.class);
+    private final AdMapper adMapper;
 
     private final AdRepository adRepository;
 
-    public AdServiceImpl(AdRepository adRepository) {
+    public AdServiceImpl(AdRepository adRepository,
+                         AdMapper adMapper) {
         this.adRepository = adRepository;
+        this.adMapper = adMapper;
     }
 
     @Override
