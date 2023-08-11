@@ -24,179 +24,179 @@ import javax.validation.Valid;
 @Validated
 public interface AdApi {
 
-    @Operation(summary = "Get all ads")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "OK"
-            )
-    })
-    @RequestMapping(value = "/ads",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            method = RequestMethod.GET)
-    ResponseEntity<AdsDto> getAllAds();
+  @Operation(summary = "Get all ads")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "OK"
+      )
+  })
+  @RequestMapping(value = "/ads",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.GET)
+  ResponseEntity<AdsDto> getAllAds();
 
-    @Operation(summary = "Add an add")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Created",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = AdDto.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content
-            )
-    })
-    @RequestMapping(value = "/ads",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            method = RequestMethod.POST)
-    ResponseEntity<AdDto> addAd(@RequestPart(name = "image") MultipartFile image,
-                                @RequestPart(name = "properties") @Valid CreateOrUpdateAdDto properties);
+  @Operation(summary = "Add an add")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "201",
+          description = "Created",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(
+                  implementation = AdDto.class
+              )
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized",
+          content = @Content
+      )
+  })
+  @RequestMapping(value = "/ads",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.POST)
+  ResponseEntity<AdDto> addAd(@RequestPart(name = "image") MultipartFile image,
+                              @RequestPart(name = "properties") @Valid CreateOrUpdateAdDto properties);
 
-    @Operation(summary = "Get ad info")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "OK",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = ExtendedAdDto.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found",
-                    content = @Content
-            )
-    })
-    @RequestMapping(value = "/ads/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            method = RequestMethod.GET)
-    ResponseEntity<ExtendedAdDto> getAds(@PathVariable int id);
+  @Operation(summary = "Get ad info")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "OK",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(
+                  implementation = ExtendedAdDto.class
+              )
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized",
+          content = @Content
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Not Found",
+          content = @Content
+      )
+  })
+  @RequestMapping(value = "/ads/{id}",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.GET)
+  ResponseEntity<ExtendedAdDto> getAds(@PathVariable int id);
 
-    @Operation(summary = "Delete ad")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "204",
-                    description = "No Content"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized"
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found"
-            )
-    })
-    @RequestMapping(value = "/ads/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            method = RequestMethod.DELETE)
-    ResponseEntity<Void> removeAd(@PathVariable int id);
+  @Operation(summary = "Delete ad")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "204",
+          description = "No Content"
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized"
+      ),
+      @ApiResponse(
+          responseCode = "403",
+          description = "Forbidden"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Not Found"
+      )
+  })
+  @RequestMapping(value = "/ads/{id}",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.DELETE)
+  ResponseEntity<Void> removeAd(@PathVariable int id);
 
-    @Operation(summary = "Update ad info")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "OK",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = AdDto.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found",
-                    content = @Content
-            )
-    })
-    @RequestMapping(value = "/ads/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            method = RequestMethod.PATCH)
-    ResponseEntity<AdDto> updateAds(@PathVariable int id,
-                                    @RequestBody @Valid CreateOrUpdateAdDto properties);
+  @Operation(summary = "Update ad info")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "OK",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(
+                  implementation = AdDto.class
+              )
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized",
+          content = @Content
+      ),
+      @ApiResponse(
+          responseCode = "403",
+          description = "Forbidden",
+          content = @Content
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Not Found",
+          content = @Content
+      )
+  })
+  @RequestMapping(value = "/ads/{id}",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.PATCH)
+  ResponseEntity<AdDto> updateAds(@PathVariable int id,
+                                  @RequestBody @Valid CreateOrUpdateAdDto properties);
 
-    @Operation(summary = "Get authorized user's ads")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "OK",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = AdsDto.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content
-            )
-    })
-    @RequestMapping(value = "/ads/me",
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            method = RequestMethod.GET)
-    ResponseEntity<AdsDto> getAdsMe();
+  @Operation(summary = "Get authorized user's ads")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "OK",
+          content = @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(
+                  implementation = AdsDto.class
+              )
+          )
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized",
+          content = @Content
+      )
+  })
+  @RequestMapping(value = "/ads/me",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.GET)
+  ResponseEntity<AdsDto> getAdsMe();
 
-    @Operation(summary = "Update ad's image")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "OK"
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not Found",
-                    content = @Content
-            )
-    })
-    @RequestMapping(value = "/ads/{id}/image",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-            method = RequestMethod.PATCH)
-    ResponseEntity<byte[]> updateImage(@PathVariable int id,
-                                       @RequestPart(name = "image") MultipartFile image);
+  @Operation(summary = "Update ad's image")
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "OK"
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized",
+          content = @Content
+      ),
+      @ApiResponse(
+          responseCode = "403",
+          description = "Forbidden",
+          content = @Content
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Not Found",
+          content = @Content
+      )
+  })
+  @RequestMapping(value = "/ads/{id}/image",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+      method = RequestMethod.PATCH)
+  ResponseEntity<byte[]> updateImage(@PathVariable int id,
+                                     @RequestPart(name = "image") MultipartFile image);
 
 }

@@ -20,42 +20,42 @@ import ru.skypro.flea.dto.ExtendedAdDto;
 @Tag(name = "Ads")
 public class AdApiController implements AdApi {
 
-    @Override
-    public ResponseEntity<AdsDto> getAllAds() {
-        return ResponseEntity.ok().build();
-    }
+  @Override
+  public ResponseEntity<AdsDto> getAllAds() {
+    return ResponseEntity.ok().build();
+  }
 
-    @Override
-    public ResponseEntity<AdDto> addAd(MultipartFile image,
-                                       CreateOrUpdateAdDto properties) {
-        return ResponseEntity.ok().build();
-    }
+  @Override
+  public ResponseEntity<AdDto> addAd(MultipartFile image,
+                                     CreateOrUpdateAdDto properties) {
+    return ResponseEntity.ok().build();
+  }
 
-    @Override
-    public ResponseEntity<ExtendedAdDto> getAds(int id) {
-        return ResponseEntity.ok().build();
-    }
+  @Override
+  public ResponseEntity<ExtendedAdDto> getAds(int id) {
+    return ResponseEntity.ok().build();
+  }
 
-    @Override
-    public ResponseEntity<Void> removeAd(int id) {
-        return ResponseEntity.ok().build();
-    }
+  @Override
+  public ResponseEntity<Void> removeAd(int id) {
+    return ResponseEntity.ok().build();
+  }
 
-    @Override
-    public ResponseEntity<AdDto> updateAds(int id,
-                                           CreateOrUpdateAdDto properties) {
-        return ResponseEntity.ok().build();
-    }
+  @Override
+  public ResponseEntity<AdDto> updateAds(int id,
+                                         CreateOrUpdateAdDto properties) {
+    return ResponseEntity.ok().build();
+  }
 
-    @Override
-    public ResponseEntity<AdsDto> getAdsMe() {
-        return ResponseEntity.ok().build();
-    }
+  @Override
+  public ResponseEntity<AdsDto> getAdsMe() {
+    return ResponseEntity.ok().build();
+  }
 
-    @Override
-    public ResponseEntity<byte[]> updateImage(int id,
-                                              MultipartFile image) {
-        return ResponseEntity.ok().build();
-    }
+  @Override
+  public ResponseEntity<byte[]> updateImage(int id,
+                                            MultipartFile image) {
+    return ResponseEntity.ok().build();
+  }
 
 }
