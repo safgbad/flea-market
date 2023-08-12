@@ -1,6 +1,5 @@
 package ru.skypro.flea.service.impl;
 
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,16 +12,23 @@ import java.util.Set;
 
 @Slf4j
 @Service
-@Setter
 public class ImageServiceImpl implements ImageService {
 
-  private static final String IMAGES_PATH = "src/main/resources/images";
+  private String imagesPath;
   private static final Set<String> ACCEPTABLE_EXTENSIONS = Set.of("png", "jpg", "jpeg");
+
+  public ImageServiceImpl() {
+    imagesPath = "src/main/resources/images";
+  }
+
+  public ImageServiceImpl(String imagesPath) {
+    this.imagesPath = imagesPath;
+  }
 
   @Override
   @PostConstruct
   public void checkCatalogue() {
-    File catalogue = new File(IMAGES_PATH);
+    File catalogue = new File(imagesPath);
     if (!catalogue.exists()) {
       boolean result = catalogue.mkdir();
       if (result) {
@@ -51,7 +57,7 @@ public class ImageServiceImpl implements ImageService {
       throw new RuntimeException();
     }
     String newFileName = fileName + "." + extension;
-    File filePath = new File(IMAGES_PATH);
+    File filePath = new File(imagesPath);
     File file = new File(filePath.getAbsolutePath(), newFileName);
     try {
       multipartFile.transferTo(file);
