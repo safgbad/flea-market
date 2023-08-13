@@ -3,6 +3,8 @@ package ru.skypro.flea.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.flea.exception.FileSystemError;
+import ru.skypro.flea.exception.UnsupportedImageTypeException;
 import ru.skypro.flea.service.ImageService;
 
 import javax.annotation.PostConstruct;
@@ -14,7 +16,7 @@ import java.util.Set;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-  private String imagesPath;
+  private final String imagesPath;
   private static final Set<String> ACCEPTABLE_EXTENSIONS = Set.of("png", "jpg", "jpeg");
 
   public ImageServiceImpl() {
@@ -30,31 +32,27 @@ public class ImageServiceImpl implements ImageService {
   public void checkCatalogue() {
     File catalogue = new File(imagesPath);
     if (!catalogue.exists()) {
-      boolean result = catalogue.mkdir();
+      boolean result = catalogue.mkdirs();
       if (result) {
-        log.info("Catalogue was created.");
+        log.info("Image resource catalogue was created.");
       } else {
-        log.info("Failed to create catalogue.");
-        throw new RuntimeException();
+        throw new FileSystemError("Failed to create image resource catalogue");
       }
     } else {
-      log.info("Catalogue already exists.");
+      log.info("Image resource catalogue already exists.");
     }
   }
 
   @Override
   public void saveImage(MultipartFile multipartFile, String fileName) {
     String extension = "";
-    String originalFileName = multipartFile.getOriginalFilename();
-    if (originalFileName == null) {
-      throw new RuntimeException();
-    }
-    int i = originalFileName.lastIndexOf(".");
+    String multipartFileName = multipartFile.getName();
+    int i = multipartFileName.lastIndexOf(".");
     if (i >= 0) {
-      extension = originalFileName.substring(i + 1);
+      extension = multipartFileName.substring(i + 1);
     }
     if (!ACCEPTABLE_EXTENSIONS.contains(extension)) {
-      throw new RuntimeException();
+      throw new UnsupportedImageTypeException("Image must be in JPEG/PNG format");
     }
     String newFileName = fileName + "." + extension;
     File filePath = new File(imagesPath);
@@ -63,9 +61,9 @@ public class ImageServiceImpl implements ImageService {
       multipartFile.transferTo(file);
       log.info("File was saved.");
     } catch (IOException e) {
-      log.info("Failed to save file.");
+      log.error("Failed to save file.");
       e.printStackTrace();
-      throw new RuntimeException();
+      throw new FileSystemError("Failed to save file");
     }
   }
 
