@@ -1,6 +1,7 @@
 package ru.skypro.flea.service;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import ru.skypro.flea.exception.UnsupportedImageTypeException;
 import ru.skypro.flea.service.impl.ImageServiceImpl;
@@ -27,10 +28,27 @@ class ImageServiceTest {
     }
 
     @Test
+    public void saveImageShouldThrowExceptionWhenMultipartFileOriginalFilenameIsNullTest() {
+        out.checkCatalogue();
+
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "smth.smth",
+                null,
+                MediaType.ALL_VALUE,
+                new byte[]{});
+
+        assertThrows(UnsupportedImageTypeException.class, () -> out.saveImage(multipartFile, ""));
+    }
+
+    @Test
     public void saveImageShouldThrowExceptionWhenMultipartFileFormatIsNotAcceptedTest() {
         out.checkCatalogue();
 
-        MockMultipartFile multipartFile = new MockMultipartFile("smth.smth", new byte[]{});
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "smth.smth",
+                "smth.smth",
+                MediaType.ALL_VALUE,
+                new byte[]{});
 
         assertThrows(UnsupportedImageTypeException.class, () -> out.saveImage(multipartFile, ""));
     }
@@ -41,7 +59,11 @@ class ImageServiceTest {
 
         String format = "png";
         byte[] bytes = new byte[]{1, 2, 3};
-        MockMultipartFile multipartFile = new MockMultipartFile("image" + '.' + format, bytes);
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image" + '.' + format,
+                "image" + '.' + format,
+                "image/" + format,
+                bytes);
 
         String fileName = "user-1";
         out.saveImage(multipartFile, fileName);

@@ -20,4 +20,6 @@ public interface AdService {
     AdDto updateAds(int id,
                     CreateOrUpdateAdDto properties);
 
+    byte[] updateImage(int id,
+                       MultipartFile image);
 }

@@ -44,12 +44,15 @@ public class ImageServiceImpl implements ImageService {
   }
 
   @Override
-  public void saveImage(MultipartFile multipartFile, String fileName) {
+  public String saveImage(MultipartFile multipartFile, String fileName) {
     String extension = "";
-    String multipartFileName = multipartFile.getName();
-    int i = multipartFileName.lastIndexOf(".");
+    String originalFileName = multipartFile.getOriginalFilename();
+    if (originalFileName == null) {
+      throw new UnsupportedImageTypeException("Filename is empty");
+    }
+    int i = originalFileName.lastIndexOf(".");
     if (i >= 0) {
-      extension = multipartFileName.substring(i + 1);
+      extension = originalFileName.substring(i + 1);
     }
     if (!ACCEPTABLE_EXTENSIONS.contains(extension)) {
       throw new UnsupportedImageTypeException("Image must be in JPEG/PNG format");
@@ -60,6 +63,7 @@ public class ImageServiceImpl implements ImageService {
     try {
       multipartFile.transferTo(file);
       log.info("File was saved.");
+      return newFileName;
     } catch (IOException e) {
       log.error("Failed to save file.");
       e.printStackTrace();

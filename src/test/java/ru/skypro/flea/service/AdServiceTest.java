@@ -5,11 +5,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import ru.skypro.flea.dto.AdDto;
 import ru.skypro.flea.dto.AdsDto;
 import ru.skypro.flea.dto.CreateOrUpdateAdDto;
 import ru.skypro.flea.dto.ExtendedAdDto;
 import ru.skypro.flea.exception.ResourceWithSpecifiedIdNotFoundException;
+import ru.skypro.flea.exception.UnsupportedImageTypeException;
 import ru.skypro.flea.mapper.AdMapper;
 import ru.skypro.flea.model.Ad;
 import ru.skypro.flea.repository.AdRepository;
@@ -19,8 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -32,6 +33,9 @@ class AdServiceTest {
 
     @Mock
     private AdRepository repositoryMock;
+
+    @Mock
+    private ImageService imageServiceMock;
 
     @InjectMocks
     private AdServiceImpl out;
@@ -59,8 +63,57 @@ class AdServiceTest {
     }
 
     @Test
-    public void addAddTest() {
-        // TODO when ImageService is ready
+    public void addAddShouldSetDefaultPhotoWhenImageFormatIsUnsupportedTest() {
+        int id = 1;
+        Ad ad = new Ad();
+        ad.setId(id);
+
+        CreateOrUpdateAdDto createOrUpdateAdDto = new CreateOrUpdateAdDto();
+        createOrUpdateAdDto.setTitle("smth.");
+
+        AdDto adDto = new AdDto();
+        adDto.setPk(id);
+        adDto.setTitle(createOrUpdateAdDto.getTitle());
+
+        MockMultipartFile multipartFile = new MockMultipartFile(".", new byte[]{});
+
+        when(mapperMock.createAdFromDto(createOrUpdateAdDto)).thenReturn(ad);
+        when(imageServiceMock.saveImage(multipartFile, "ad-" + id)).thenThrow(UnsupportedImageTypeException.class);
+        when(mapperMock.toAdDto(ad)).thenReturn(adDto);
+
+        AdDto result = out.addAdd(multipartFile, createOrUpdateAdDto);
+
+        assertEquals(ad.getImage(), "/no-photo.png");
+        assertEquals(result, adDto);
+
+        verify(repositoryMock, times(2)).save(ad);
+    }
+
+    @Test
+    public void addAddShouldReturnCorrectDtoWhenArgsAreCorrectTest() {
+        int id = 1;
+        Ad ad = new Ad();
+        ad.setId(id);
+
+        CreateOrUpdateAdDto createOrUpdateAdDto = new CreateOrUpdateAdDto();
+        createOrUpdateAdDto.setTitle("smth.");
+
+        AdDto adDto = new AdDto();
+        adDto.setPk(id);
+        adDto.setTitle(createOrUpdateAdDto.getTitle());
+
+        MockMultipartFile multipartFile = new MockMultipartFile(".", new byte[]{});
+
+        when(mapperMock.createAdFromDto(createOrUpdateAdDto)).thenReturn(ad);
+        when(imageServiceMock.saveImage(multipartFile, "ad-" + id)).thenReturn("smth.");
+        when(mapperMock.toAdDto(ad)).thenReturn(adDto);
+
+        AdDto result = out.addAdd(multipartFile, createOrUpdateAdDto);
+
+        assertEquals(ad.getImage(), "/smth.");
+        assertEquals(result, adDto);
+
+        verify(repositoryMock, times(2)).save(ad);
     }
 
     @Test
@@ -141,6 +194,43 @@ class AdServiceTest {
 
     // TODO: getAdsMeTest (need the user id from authorization)
 
-    // TODO: updateImageTest (when ImageService is ready)
+    @Test
+    public void updateImageShouldThrowExceptionWhenAdWithSpecifiedIdNotFoundTest() {
+        when(repositoryMock.existsById(any())).thenReturn(false);
+
+        assertThrows(ResourceWithSpecifiedIdNotFoundException.class, () -> out.updateImage(1, null));
+    }
+
+    @Test
+    public void updateImageShouldReturnNullWhenExceptionCaughtTest() {
+        int id = 1;
+
+        MockMultipartFile multipartFile = new MockMultipartFile(".", new byte[]{});
+
+        when(repositoryMock.existsById(id)).thenReturn(true);
+        when(imageServiceMock.saveImage(multipartFile, "ad-" + id)).thenThrow(UnsupportedImageTypeException.class);
+
+        byte[] result = out.updateImage(id, multipartFile);
+
+        assertNull(result);
+    }
+
+    @Test
+    public void updateImageShouldReturnCorrectByteArrayWhenArgsAreCorrectTest() {
+        int id = 1;
+
+        byte[] bytes = new byte[]{1, 2, 3};
+
+        MockMultipartFile multipartFile = new MockMultipartFile(".", bytes);
+
+        when(repositoryMock.existsById(id)).thenReturn(true);
+        when(imageServiceMock.saveImage(multipartFile, "ad-" + id)).thenReturn("smth.");
+
+        byte[] result = out.updateImage(id, multipartFile);
+
+        assertArrayEquals(result, bytes);
+
+        verify(repositoryMock).updateImageById("/smth.", id);
+    }
 
 }

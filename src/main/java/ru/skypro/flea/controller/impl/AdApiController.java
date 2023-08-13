@@ -79,7 +79,11 @@ public class AdApiController implements AdApi {
     @Override
     public ResponseEntity<byte[]> updateImage(int id,
                                               MultipartFile image) {
-        return ResponseEntity.ok().build();
+        byte[] bytes = adService.updateImage(id, image);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bytes);
     }
 
 }

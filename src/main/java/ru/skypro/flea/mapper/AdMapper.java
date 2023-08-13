@@ -36,7 +36,7 @@ public interface AdMapper {
     @Mapping(target = "phone", source = "user.phone")
     ExtendedAdDto toExtendedAdDto(Ad entity);
 
-    Ad createAdFromDto(String image, CreateOrUpdateAdDto dto);
+    Ad createAdFromDto(CreateOrUpdateAdDto dto);
 
     void updateAdFromDto(@MappingTarget Ad ad, CreateOrUpdateAdDto dto);
 
