@@ -6,6 +6,5 @@ public interface ImageService {
 
   void checkCatalogue();
 
-
   void saveImage(MultipartFile multipartFile, String fileName);
 }

@@ -1,7 +1,6 @@
 package ru.skypro.flea.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
@@ -21,8 +20,7 @@ public interface ImageApi {
   })
   @ApiResponse(
       responseCode = "404",
-      description = "Not Found",
-      content = @Content
+      description = "Not Found"
   )
   @RequestMapping(value = "/img/{imageName}",
       produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE},
