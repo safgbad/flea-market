@@ -3,7 +3,7 @@
 ## DB schema:
 
 <p align="center">
-  <img src="schema.png" alt="DB schema" height="500"/>
+  <img src="schema.png" alt="DB schema" height="500" width="500"/>
 </p>
 
 ## Launch
