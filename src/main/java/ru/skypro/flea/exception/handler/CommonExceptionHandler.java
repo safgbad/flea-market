@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.skypro.flea.exception.FileSystemError;
 import ru.skypro.flea.exception.ResourceWithSpecifiedIdNotFoundException;
 import ru.skypro.flea.exception.RestError;
+import ru.skypro.flea.exception.UnsupportedImageTypeException;
 
 @RestControllerAdvice
 public class CommonExceptionHandler {
@@ -21,6 +22,12 @@ public class CommonExceptionHandler {
     public ResponseEntity<RestError> handleFileSystemError(
             FileSystemError ex) {
         return configureResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
+
+    @ExceptionHandler(UnsupportedImageTypeException.class)
+    public ResponseEntity<RestError> handleUnsupportedImageTypeException(
+            UnsupportedImageTypeException ex) {
+        return configureResponse(HttpStatus.BAD_REQUEST, ex);
     }
 
     private ResponseEntity<RestError> configureResponse(
