@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.skypro.flea.exception.FileSystemError;
 import ru.skypro.flea.exception.ResourceWithSpecifiedIdNotFoundException;
 import ru.skypro.flea.exception.RestError;
 
@@ -16,9 +17,15 @@ public class CommonExceptionHandler {
         return configureResponse(HttpStatus.NOT_FOUND, ex);
     }
 
+    @ExceptionHandler(FileSystemError.class)
+    public ResponseEntity<RestError> handleFileSystemError(
+            FileSystemError ex) {
+        return configureResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
+
     private ResponseEntity<RestError> configureResponse(
             HttpStatus httpStatus,
-            Exception ex) {
+            Throwable ex) {
         RestError error = new RestError(httpStatus.toString(), ex.getMessage());
 
         return ResponseEntity
