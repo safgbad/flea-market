@@ -12,4 +12,9 @@ public class MapperConfiguration {
         return Mappers.getMapper(AdMapper.class);
     }
 
+    @Bean
+    public CommentMapper getCommentMapper() {
+        return Mappers.getMapper(CommentMapper.class);
+    }
+
 }
