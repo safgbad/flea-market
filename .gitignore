@@ -33,3 +33,4 @@ build/
 .vscode/
 
 src/main/resources/images
+!src/main/resources/images/no-photo.jpg

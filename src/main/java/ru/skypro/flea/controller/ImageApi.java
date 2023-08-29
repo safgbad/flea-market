@@ -22,7 +22,7 @@ public interface ImageApi {
       responseCode = "404",
       description = "Not Found"
   )
-  @RequestMapping(value = "/img/{imageName}",
+  @RequestMapping(value = "/{imageName}",
       produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE},
       method = RequestMethod.GET)
   ResponseEntity<byte[]> downloadImage(@PathVariable String imageName);
