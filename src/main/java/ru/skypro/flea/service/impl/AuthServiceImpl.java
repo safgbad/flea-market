@@ -1,23 +1,32 @@
 package ru.skypro.flea.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.flea.dto.RegisterDto;
+import ru.skypro.flea.repository.UserRepository;
 import ru.skypro.flea.service.AuthService;
 
+import javax.transaction.Transactional;
+
+@Slf4j
 @Service
+@Transactional
 public class AuthServiceImpl implements AuthService {
 
     private final UserDetailsManager manager;
     private final PasswordEncoder encoder;
+    private final UserRepository userRepository;
 
     public AuthServiceImpl(UserDetailsManager manager,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           UserRepository userRepository) {
         this.manager = manager;
         this.encoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -31,16 +40,28 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean register(RegisterDto register) {
-        if (manager.userExists(register.getUsername())) {
+        String username = register.getUsername();
+        if (manager.userExists(username)) {
             return false;
         }
         manager.createUser(
                 User.builder()
                         .passwordEncoder(this.encoder::encode)
                         .password(register.getPassword())
-                        .username(register.getUsername())
+                        .username(username)
                         .roles(register.getRole().name())
                         .build());
+        var userOptional = userRepository.findByEmail(username);
+        if (userOptional.isEmpty()) {
+            log.error("UNEXPECTED ERROR: USER HAS NOT FOUND");
+            throw new RuntimeException();
+        }
+        var user = userOptional.get();
+        user.setFirstName(register.getFirstName());
+        user.setLastName(register.getLastName());
+        user.setPhone(register.getPhone());
+        userRepository.save(user);
+
         return true;
     }
 

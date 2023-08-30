@@ -1,5 +1,6 @@
 package ru.skypro.flea.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,12 +8,17 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.skypro.flea.model.enums.Role;
+import ru.skypro.flea.repository.UserRepository;
+
+import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@Slf4j
 @Configuration
 public class WebSecurityConfig {
 
@@ -26,15 +32,35 @@ public class WebSecurityConfig {
     };
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+    @Transactional
+    public JdbcUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder,
+                                                     DataSource dataSource,
+                                                     UserRepository userRepository) {
+        String email = "admin@admin.com";
         UserDetails user =
                 User.builder()
-                        .username("user@gmail.com")
-                        .password("password")
+                        .username(email)
+                        .password("admin")
                         .passwordEncoder(passwordEncoder::encode)
-                        .roles(Role.USER.name())
+                        .authorities(Role.ADMIN.name())
                         .build();
-        return new InMemoryUserDetailsManager(user);
+        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+        if (users.userExists(email)) {
+            log.info("Admin account has already been created");
+            return users;
+        }
+        users.createUser(user);
+        var adminOptional = userRepository.findByEmail(email);
+        if (adminOptional.isEmpty()) {
+            log.error("ADMIN ACCOUNT HAS NOT FOUND");
+            throw new RuntimeException();
+        }
+        var admin = adminOptional.get();
+        admin.setFirstName("Admin");
+        admin.setPhone("+7(000)000-00-00");
+        userRepository.save(admin);
+
+        return users;
     }
 
     @Bean
