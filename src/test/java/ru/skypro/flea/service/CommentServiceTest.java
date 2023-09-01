@@ -67,7 +67,7 @@ class CommentServiceTest {
         commentsDto.setCount(commentsDto.getResults().size());
 
         when(adRepositoryMock.findById(adId)).thenReturn(Optional.of(ad));
-        when(commentRepositoryMock.findAllByAd(ad)).thenReturn(commentList);
+        when(commentRepositoryMock.findAllByAdOrderByIdDesc(ad)).thenReturn(commentList);
         when(mapperMock.toCommentsDto(commentList)).thenReturn(commentsDto);
 
         CommentsDto result = out.getComments(adId);

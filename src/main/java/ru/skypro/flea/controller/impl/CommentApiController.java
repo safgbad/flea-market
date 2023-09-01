@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.flea.controller.CommentApi;
@@ -33,8 +34,9 @@ public class CommentApiController implements CommentApi {
 
     @Override
     public ResponseEntity<CommentDto> addComment(int id,
-                                                 CreateOrUpdateCommentDto dto) {
-        CommentDto comment = commentService.addComment(id, dto);
+                                                 CreateOrUpdateCommentDto dto,
+                                                 Authentication authentication) {
+        CommentDto comment = commentService.addComment(id, dto, authentication);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -43,8 +45,9 @@ public class CommentApiController implements CommentApi {
 
     @Override
     public ResponseEntity<Void> deleteComment(int adId,
-                                              int commentId) {
-        commentService.deleteComment(adId, commentId);
+                                              int commentId,
+                                              Authentication authentication) {
+        commentService.deleteComment(adId, commentId, authentication);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -54,8 +57,9 @@ public class CommentApiController implements CommentApi {
     @Override
     public ResponseEntity<CommentDto> updateComment(int adId,
                                                     int commentId,
-                                                    CreateOrUpdateCommentDto dto) {
-        CommentDto comment = commentService.updateComment(adId, commentId, dto);
+                                                    CreateOrUpdateCommentDto dto,
+                                                    Authentication authentication) {
+        CommentDto comment = commentService.updateComment(adId, commentId, dto, authentication);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

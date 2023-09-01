@@ -17,4 +17,9 @@ public class MapperConfiguration {
         return Mappers.getMapper(CommentMapper.class);
     }
 
+    @Bean
+    public UserMapper getUserMapper() {
+        return Mappers.getMapper(UserMapper.class);
+    }
+
 }

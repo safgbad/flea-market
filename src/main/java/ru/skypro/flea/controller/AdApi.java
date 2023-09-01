@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,7 @@ import javax.validation.Valid;
 @Validated
 public interface AdApi {
 
+  @PreAuthorize("permitAll()")
   @Operation(summary = "Get all ads")
   @ApiResponses(value = {
       @ApiResponse(
@@ -36,6 +39,7 @@ public interface AdApi {
       method = RequestMethod.GET)
   ResponseEntity<AdsDto> getAllAds();
 
+  @PreAuthorize("hasAuthority('USER')")
   @Operation(summary = "Add an add")
   @ApiResponses(value = {
       @ApiResponse(
@@ -59,8 +63,10 @@ public interface AdApi {
       produces = MediaType.APPLICATION_JSON_VALUE,
       method = RequestMethod.POST)
   ResponseEntity<AdDto> addAd(@RequestPart(name = "image") MultipartFile image,
-                              @RequestPart(name = "properties") @Valid CreateOrUpdateAdDto properties);
+                              @RequestPart(name = "properties") @Valid CreateOrUpdateAdDto properties,
+                              Authentication authentication);
 
+  @PreAuthorize("hasAuthority('USER')")
   @Operation(summary = "Get ad info")
   @ApiResponses(value = {
       @ApiResponse(
@@ -89,6 +95,7 @@ public interface AdApi {
       method = RequestMethod.GET)
   ResponseEntity<ExtendedAdDto> getAds(@PathVariable int id);
 
+  @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
   @Operation(summary = "Delete ad")
   @ApiResponses(value = {
       @ApiResponse(
@@ -111,8 +118,10 @@ public interface AdApi {
   @RequestMapping(value = "/ads/{id}",
       produces = MediaType.APPLICATION_JSON_VALUE,
       method = RequestMethod.DELETE)
-  ResponseEntity<Void> removeAd(@PathVariable int id);
+  ResponseEntity<Void> removeAd(@PathVariable int id,
+                                Authentication authentication);
 
+  @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
   @Operation(summary = "Update ad info")
   @ApiResponses(value = {
       @ApiResponse(
@@ -145,8 +154,10 @@ public interface AdApi {
       produces = MediaType.APPLICATION_JSON_VALUE,
       method = RequestMethod.PATCH)
   ResponseEntity<AdDto> updateAds(@PathVariable int id,
-                                  @RequestBody @Valid CreateOrUpdateAdDto properties);
+                                  @RequestBody @Valid CreateOrUpdateAdDto properties,
+                                  Authentication authentication);
 
+  @PreAuthorize("hasAuthority('USER')")
   @Operation(summary = "Get authorized user's ads")
   @ApiResponses(value = {
       @ApiResponse(
@@ -168,8 +179,9 @@ public interface AdApi {
   @RequestMapping(value = "/ads/me",
       produces = MediaType.APPLICATION_JSON_VALUE,
       method = RequestMethod.GET)
-  ResponseEntity<AdsDto> getAdsMe();
+  ResponseEntity<AdsDto> getAdsMe(Authentication authentication);
 
+  @PreAuthorize("hasAuthority('USER')")
   @Operation(summary = "Update ad's image")
   @ApiResponses(value = {
       @ApiResponse(
@@ -197,6 +209,7 @@ public interface AdApi {
       produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
       method = RequestMethod.PATCH)
   ResponseEntity<byte[]> updateImage(@PathVariable int id,
-                                     @RequestPart(name = "image") MultipartFile image);
+                                     @RequestPart(name = "image") MultipartFile image,
+                                     Authentication authentication);
 
 }

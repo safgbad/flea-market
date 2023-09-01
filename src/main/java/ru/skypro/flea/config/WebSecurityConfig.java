@@ -3,6 +3,8 @@ package ru.skypro.flea.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +22,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Slf4j
 @Configuration
-public class WebSecurityConfig {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
@@ -28,7 +31,8 @@ public class WebSecurityConfig {
             "/v3/api-docs",
             "/webjars/**",
             "/login",
-            "/register"
+            "/register",
+            "/img/**"
     };
 
     @Bean
@@ -40,9 +44,9 @@ public class WebSecurityConfig {
         UserDetails user =
                 User.builder()
                         .username(email)
-                        .password("admin")
+                        .password("administrator")
                         .passwordEncoder(passwordEncoder::encode)
-                        .authorities(Role.ADMIN.name())
+                        .authorities(Role.ADMIN.name(), Role.USER.name())
                         .build();
         JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
         if (users.userExists(email)) {
@@ -55,10 +59,6 @@ public class WebSecurityConfig {
             log.error("ADMIN ACCOUNT HAS NOT FOUND");
             throw new RuntimeException();
         }
-        var admin = adminOptional.get();
-        admin.setFirstName("Admin");
-        admin.setPhone("+7(000)000-00-00");
-        userRepository.save(admin);
 
         return users;
     }
@@ -67,13 +67,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf()
                 .disable()
-//                .authorizeHttpRequests(
-//                        authorization ->
-//                                authorization
-//                                        .mvcMatchers(AUTH_WHITELIST)
-//                                        .permitAll()
-//                                        .mvcMatchers("/ads/**", "/users/**")
-//                                        .authenticated())
+                .authorizeHttpRequests(
+                        authorization ->
+                                authorization
+                                        .mvcMatchers(AUTH_WHITELIST)
+                                        .permitAll()
+                                        .mvcMatchers("/users/**")
+                                        .authenticated())
                 .cors()
                 .and()
                 .httpBasic(withDefaults());

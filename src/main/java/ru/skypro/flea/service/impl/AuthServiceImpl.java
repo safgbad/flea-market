@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
                         .passwordEncoder(this.encoder::encode)
                         .password(register.getPassword())
                         .username(username)
-                        .roles(register.getRole().name())
+                        .authorities(register.getRole().name())
                         .build());
         var userOptional = userRepository.findByEmail(username);
         if (userOptional.isEmpty()) {

@@ -42,7 +42,7 @@ public class User implements UserDetails {
   @Column(name = "enabled")
   private boolean enabled;
 
-  @OneToMany(mappedBy = "username")
+  @OneToMany(mappedBy = "user")
   private Set<Authority> authorities;
 
   @Override

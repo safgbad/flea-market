@@ -1,6 +1,7 @@
 package ru.skypro.flea.controller.impl;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.flea.controller.ImageApi;
 
@@ -8,6 +9,7 @@ import java.io.*;
 import java.nio.file.Files;
 
 @RestController
+@CrossOrigin(value = "http://localhost:3000")
 public class ImageApiController implements ImageApi {
 
   private static final String IMAGES_PATH = "src/main/resources/images";
