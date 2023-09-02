@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "ads")
@@ -32,5 +33,10 @@ public class Ad {
   @ManyToOne
   @JoinColumn(name = "author_id")
   private User user;
+
+  @OneToMany(mappedBy = "ad",
+          cascade = CascadeType.REMOVE,
+          orphanRemoval = true)
+  private List<Comment> comments;
 
 }

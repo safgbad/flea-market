@@ -81,3 +81,11 @@ DROP TABLE roles;
 -- changeset safgbad:7
 ALTER TABLE authorities
     ADD PRIMARY KEY (username, authority);
+
+-- changeset safgbad:8
+ALTER TABLE comments
+    DROP CONSTRAINT comments_ads_id_fkey,
+    ADD CONSTRAINT comments_ads_id_fkey
+        FOREIGN KEY (ads_id)
+        REFERENCES ads (id)
+        ON DELETE CASCADE;
