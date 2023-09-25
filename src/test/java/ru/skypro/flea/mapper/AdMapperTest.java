@@ -90,13 +90,11 @@ class AdMapperTest {
         dto.setTitle("Title");
         dto.setPrice(1);
         dto.setDescription("Description");
-        String imageLink = "https://imagehostingservice.org/fjh32bn.png";
 
-        Ad entity = mapper.createAdFromDto(imageLink, dto);
+        Ad entity = mapper.createAdFromDto(dto);
         assertEquals(entity.getTitle(), dto.getTitle());
         assertEquals(entity.getPrice(), dto.getPrice());
         assertEquals(entity.getDescription(), dto.getDescription());
-        assertEquals(entity.getImage(), imageLink);
     }
 
     @Test
