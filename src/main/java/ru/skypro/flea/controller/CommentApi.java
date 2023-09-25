@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ import javax.validation.Valid;
 @Validated
 public interface CommentApi {
 
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Get ad's comments")
     @ApiResponses(value = {
             @ApiResponse(
@@ -49,6 +52,7 @@ public interface CommentApi {
             method = RequestMethod.GET)
     ResponseEntity<CommentsDto> getComments(@PathVariable(name = "id") int id);
 
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Add comment to the ad")
     @ApiResponses(value = {
             @ApiResponse(
@@ -77,8 +81,10 @@ public interface CommentApi {
             produces = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.POST)
     ResponseEntity<CommentDto> addComment(@PathVariable(name = "id") int id,
-                                          @RequestBody @Valid CreateOrUpdateCommentDto dto);
+                                          @RequestBody @Valid CreateOrUpdateCommentDto dto,
+                                          Authentication authentication);
 
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Delete comment")
     @ApiResponses(value = {
             @ApiResponse(
@@ -101,8 +107,10 @@ public interface CommentApi {
     @RequestMapping(value = "/ads/{adId}/comments/{commentId}",
             method = RequestMethod.DELETE)
     ResponseEntity<Void> deleteComment(@PathVariable(name = "adId") int adId,
-                                       @PathVariable(name = "commentId") int commentId);
+                                       @PathVariable(name = "commentId") int commentId,
+                                       Authentication authentication);
 
+    @PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
     @Operation(summary = "Update the comment")
     @ApiResponses(value = {
             @ApiResponse(
@@ -137,6 +145,7 @@ public interface CommentApi {
             method = RequestMethod.PATCH)
     ResponseEntity<CommentDto> updateComment(@PathVariable(name = "adId") int adId,
                                              @PathVariable(name = "commentId") int commentId,
-                                             @RequestBody @Valid CreateOrUpdateCommentDto dto);
+                                             @RequestBody @Valid CreateOrUpdateCommentDto dto,
+                                             Authentication authentication);
 
 }

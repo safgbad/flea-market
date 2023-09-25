@@ -3,11 +3,9 @@ package ru.skypro.flea.mapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import ru.skypro.flea.dto.RegisterDto;
 import ru.skypro.flea.dto.UpdateUserDto;
 import ru.skypro.flea.dto.UserDto;
 import ru.skypro.flea.model.User;
-import ru.skypro.flea.model.enums.Role;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,7 +23,6 @@ class UserMapperTest {
         defaultUser.setLastName("Brown");
         defaultUser.setEmail("john.brown2007@example.com");
         defaultUser.setPhone("+7(000)000-00-00");
-        defaultUser.setRole(Role.USER);
         defaultUser.setImage("https://imagehostingservice.org/jnn41kr.png");
     }
 
@@ -34,26 +31,6 @@ class UserMapperTest {
         UserDto dto = mapper.toUserDto(defaultUser);
 
         assertEntityEqualsToDto(defaultUser, dto);
-    }
-
-    @Test
-    public void createUserFromRegisterDtoTest() {
-        RegisterDto dto = new RegisterDto();
-        dto.setUsername("morgan.johns1938@example.com");
-        dto.setPassword("qwerty123456");
-        dto.setFirstName("Morgan");
-        dto.setLastName("Johns");
-        dto.setPhone("+7(000)00-00-00");
-        dto.setRole(Role.USER);
-
-        User entity = mapper.createUserFromDto(dto);
-
-        assertEquals(entity.getEmail(), dto.getUsername());
-        assertEquals(entity.getPassword(), dto.getPassword());
-        assertEquals(entity.getFirstName(), dto.getFirstName());
-        assertEquals(entity.getLastName(), dto.getLastName());
-        assertEquals(entity.getPhone(), dto.getPhone());
-        assertEquals(entity.getRole(), dto.getRole());
     }
 
     @Test
@@ -81,7 +58,6 @@ class UserMapperTest {
         assertEquals(dto.getFirstName(), entity.getFirstName());
         assertEquals(dto.getLastName(), entity.getLastName());
         assertEquals(dto.getPhone(), entity.getPhone());
-        assertEquals(dto.getRole(), entity.getRole());
         assertEquals(dto.getImage(), entity.getImage());
     }
 
