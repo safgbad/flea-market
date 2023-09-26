@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +36,9 @@ public class AdApiController implements AdApi {
 
     @Override
     public ResponseEntity<AdDto> addAd(MultipartFile image,
-                                       CreateOrUpdateAdDto properties) {
-        AdDto ad = adService.addAdd(image, properties);
+                                       CreateOrUpdateAdDto properties,
+                                       Authentication authentication) {
+        AdDto ad = adService.addAdd(image, properties, authentication);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -53,8 +55,9 @@ public class AdApiController implements AdApi {
     }
 
     @Override
-    public ResponseEntity<Void> removeAd(int id) {
-        adService.removeAd(id);
+    public ResponseEntity<Void> removeAd(int id,
+                                         Authentication authentication) {
+        adService.removeAd(id, authentication);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
@@ -63,8 +66,9 @@ public class AdApiController implements AdApi {
 
     @Override
     public ResponseEntity<AdDto> updateAds(int id,
-                                           CreateOrUpdateAdDto properties) {
-        AdDto ad = adService.updateAds(id, properties);
+                                           CreateOrUpdateAdDto properties,
+                                           Authentication authentication) {
+        AdDto ad = adService.updateAds(id, properties, authentication);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -72,14 +76,19 @@ public class AdApiController implements AdApi {
     }
 
     @Override
-    public ResponseEntity<AdsDto> getAdsMe() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AdsDto> getAdsMe(Authentication authentication) {
+        AdsDto ads = adService.getAdsMe(authentication);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ads);
     }
 
     @Override
     public ResponseEntity<byte[]> updateImage(int id,
-                                              MultipartFile image) {
-        byte[] bytes = adService.updateImage(id, image);
+                                              MultipartFile image,
+                                              Authentication authentication) {
+        byte[] bytes = adService.updateImage(id, image, authentication);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

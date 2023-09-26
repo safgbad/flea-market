@@ -1,9 +1,23 @@
 # FLEA MARKET BACK-END
 
+Diploma project for students of Java developer course in Skypro.<br>
+Flea market back-end application (according to [front-end part](https://github.com/BizinMitya/front-react-avito)).
+
+## Tech Stack:
+- Java 17, Maven
+- Docker
+- Spring (Boot, Web, Data, Security)
+- PostgreSQL, H2 Database, Liquibase
+- MapStruct, Lombok
+
+## Contributors:
+- [Epifanova Valeriya](https://github.com/LoliPis)
+- [Nazarov Artem](https://github.com/safgbad)
+
 ## DB schema:
 
 <p align="center">
-  <img src="schema.png" alt="DB schema" height="500" width="500"/>
+  <img src="schema.png" alt="DB schema"/>
 </p>
 
 ## Launch

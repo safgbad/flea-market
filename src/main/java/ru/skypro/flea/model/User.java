@@ -3,16 +3,18 @@ package ru.skypro.flea.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.skypro.flea.model.enums.Role;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
 @Getter
 @Setter
-public class User {
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +27,7 @@ public class User {
   @Column(name = "last_name")
   private String lastName;
 
-  @Column(name = "email")
+  @Column(name = "username")
   private String email;
 
   @Column(name = "password")
@@ -34,10 +36,33 @@ public class User {
   @Column(name = "phone")
   private String phone;
 
-  @Column(name = "user_role")
-  @Enumerated(EnumType.STRING)
-  private Role role;
-
   @Column(name = "image")
   private String image;
+
+  @Column(name = "enabled")
+  private boolean enabled;
+
+  @OneToMany(mappedBy = "user")
+  private Set<Authority> authorities;
+
+  @Override
+  public String getUsername() {
+    return email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
 }

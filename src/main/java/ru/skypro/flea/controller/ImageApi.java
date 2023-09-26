@@ -5,12 +5,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public interface ImageApi {
 
+  @PreAuthorize("permitAll()")
   @Operation(summary = "Image for frontend")
   @ApiResponses(value = {
       @ApiResponse(
@@ -22,7 +24,7 @@ public interface ImageApi {
       responseCode = "404",
       description = "Not Found"
   )
-  @RequestMapping(value = "/{imageName}",
+  @RequestMapping(value = "/img/{imageName}",
       produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE},
       method = RequestMethod.GET)
   ResponseEntity<byte[]> downloadImage(@PathVariable String imageName);

@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import javax.validation.Valid;
 @Validated
 public interface UserApi {
 
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Password update")
     @ApiResponses(value = {
             @ApiResponse(
@@ -42,8 +45,10 @@ public interface UserApi {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             method = RequestMethod.POST
     )
-    ResponseEntity<Void> setPassword(@RequestBody @Valid NewPasswordDto newPassword);
+    ResponseEntity<Void> setPassword(@RequestBody @Valid NewPasswordDto newPassword,
+                                     Authentication authentication);
 
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Get authorized user info")
     @ApiResponses(value = {
             @ApiResponse(
@@ -65,8 +70,9 @@ public interface UserApi {
             produces = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.GET
     )
-    ResponseEntity<UserDto> getUser();
+    ResponseEntity<UserDto> getUser(Authentication authentication);
 
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Update authorized user info")
     @ApiResponses(value = {
             @ApiResponse(
@@ -88,8 +94,10 @@ public interface UserApi {
             produces = {MediaType.APPLICATION_JSON_VALUE},
             method = RequestMethod.PATCH
     )
-    ResponseEntity<UpdateUserDto> updateUser(@RequestBody @Valid UpdateUserDto updateUser);
+    ResponseEntity<UpdateUserDto> updateUser(@RequestBody @Valid UpdateUserDto updateUser,
+                                             Authentication authentication);
 
+    @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "Update authorized user avatar")
     @ApiResponses(value = {
             @ApiResponse(
@@ -106,6 +114,7 @@ public interface UserApi {
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             method = RequestMethod.PATCH
     )
-    ResponseEntity<Void> updateUserImage(@RequestPart(name = "image") MultipartFile image);
+    ResponseEntity<Void> updateUserImage(@RequestPart(name = "image") MultipartFile image,
+                                         Authentication authentication);
 
 }
